@@ -1,7 +1,7 @@
 % What is the diurnal cycle of fine and coarse AOD?
 % function diurnal(mon, dy)
 clear
-load('aeronet_L1p5_Tyler.mat');
+load('aod_data.mat');
 
 date = datetime(SaltonSea.Date_ddmmyyyy,'Format','dd/MM/yyyy HH:mm:SS');
 time = datetime(SaltonSea.Time_hhmmss,'Format','dd/MM/yyyy HH:mm:SS');
@@ -72,13 +72,6 @@ for i = 1:numel(x)
     if ~isempty(g); aod_f(i) = mean(fine(g)); end
 
 end
-
-% % put in PST time
-% x = x-7;
-% aod_c = [aod_c(x>0) aod_c(x<0)];
-% aod_f = [aod_f(x>0) aod_f(x<0)];
-% x = [x(x>0) x(x<0)];
-% x(x<0) = x(x<0)+24;
 
 g = x>=8 & x<=16; % don't use data around sunrise/sunset
 plot(x(g),aod_c(g)); hold on
