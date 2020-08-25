@@ -1,6 +1,6 @@
 % What is the diurnal cycle of fine and coarse AOD?
 
-load('aeronet_L1p5_Tyler.mat');
+load('aod_data.mat');
 
 date = SaltonSea.Date_ddmmyyyy;
 time = SaltonSea.Time_hhmmss;
