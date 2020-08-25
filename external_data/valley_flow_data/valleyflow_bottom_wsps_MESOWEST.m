@@ -1,4 +1,4 @@
-% Script that plots a site's windspeed data using same subset of days **
+% Script that plots MESOWEST sites windspeed data using same subset of days **
 % some days may be misisng due to bad data or instrument error.
 % -----------------------------------------------------------------
 % Analysis using bottom percentage of windspeed 
