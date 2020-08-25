@@ -29,4 +29,7 @@ clearvars hms hmsall mdy winddirection windspeed i  a b c d ...
 JPL.time = time;
 JPL.wspd = wspdall;
 JPL.wdir = wdirall;
+JPL.lat = 33.22532;
+JPL.lon = -115.82425;
+JPL.sitename = "JPL";
 end

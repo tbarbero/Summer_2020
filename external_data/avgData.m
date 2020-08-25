@@ -7,10 +7,18 @@ temporalres = abs(time(1)-time(2));
 if temporalres == duration(1,0,0)
     x = 0:23;
     step = 1;
+elseif temporalres == duration(0,1,0)
+    x = 0:0.5:23.5;
+    step = 0.5;
 else % any higher resolution use 30min avgs
     x = 0:0.5:23.5;
     step = 0.5;
 end
+
+% x  = 0:0.5:23.5;
+% step = 0.5;
+
+
 % get monthly avg windspds for each 1/2hr
 for i=1:numel(x)
    
@@ -26,15 +34,10 @@ for i=1:numel(x)
         % B has windspeed data w/o NaNs
         wsps(i) = mean(B);
         
-        
+       
         C = wdir(g);
         D = C(~isnan(C));
         wdirs(i) = mean(D);
     end
 end
-% if numel(x)~=numel(wspd)
-%     wsps(end+1) = wsps(1);
-%     wdirs(end+1) = wdirs(1);
-% end
-
 end
