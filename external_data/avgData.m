@@ -1,4 +1,4 @@
-% function to output windspeed and winddirection data into averages as a 
+% script to output windspeed and winddirection data into averages as a 
 % function of hour
 
 function [wsps, wdirs, x] = avgData(time, wspd, wdir)
@@ -29,12 +29,9 @@ for i=1:numel(x)
         % B has windspeed data w/o NaNs
         wsps(i) = mean(tmp);
         
-       
         tmp = wdir(g);
         tmp = tmp(~isnan(tmp));
         wdirs(i) = mean(tmp);
     end
-    
 end
-
 end
