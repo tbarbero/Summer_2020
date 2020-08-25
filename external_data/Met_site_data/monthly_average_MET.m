@@ -1,6 +1,5 @@
 % Create monthly averages of Windspeed/Winddirection of our Met site
-% (UTC time)
-% function monthly_average_MET(filename)
+
 clear all
 clc
 
@@ -41,4 +40,3 @@ plot(x,wdirs)
 xlabel('Hour (PST)');ylabel('Wind Direction');add_degs;
 xticks([0:2:24]);xlim([0,23]);grid
 % saveas(gcf,'windspeeddir.jpg')
-% end
