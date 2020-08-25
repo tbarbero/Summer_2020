@@ -1,4 +1,9 @@
-% bottom percentage windspeed analysis for JPL,SSMET,CARB sites
+% Script that plots JPL,CARB,SSMET SITES windspeed data using same 
+% subset of days.
+% *Some days may be misisng due to bad data or instrument error.
+% -----------------------------------------------------------------
+% Analysis using bottom percentage of windspeed 
+% -----------------------------------------------------------------
 
 clear
 clc
