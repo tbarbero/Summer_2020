@@ -1,5 +1,8 @@
 % Script that plots a site's windspeed data using same subset of days **
 % some days may be misisng due to bad data or instrument error.
+% -----------------------------------------------------------------
+% Analysis using bottom percentage of windspeed 
+% -----------------------------------------------------------------
 
 clear
 clc
