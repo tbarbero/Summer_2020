@@ -40,3 +40,5 @@ plot(x,wdirs)
 xlabel('Hour (PST)');ylabel('Wind Direction');add_degs;
 xticks([0:2:24]);xlim([0,23]);grid
 % saveas(gcf,'windspeeddir.jpg')
+
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.32, 0.6, 0.55])
