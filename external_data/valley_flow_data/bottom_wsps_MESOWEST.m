@@ -67,3 +67,10 @@ subplot(1,3,3);plot(x,wdirs);grid;xticks([0:2:24]);yticks([0:15:360]);add_degs;x
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0.1, 0.32, 0.7, 0.55])
 fig = strcat(site,'.png');
 % saveas(gcf,fig)
+%% notes
+% KIPL site looks a little worse when using same subset of days. --
+% -- KIPL reoslution not that great, could cause bad data
+% KNJK bad data (hourly)
+
+% might not align PERFECTLY NW-SE valley flow b/c some bottom 50% westerly winds still
+% could be in dataset and would dilute the NW-SE valley flow
