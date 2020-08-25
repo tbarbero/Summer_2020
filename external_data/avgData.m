@@ -1,43 +1,40 @@
-% function to average wspd, wdir into monthly averages % or daily averages
-% for minute resolution data
+% function to output windspeed and winddirection data into averages as a 
+% function of hour
+
 function [wsps, wdirs, x] = avgData(time, wspd, wdir)
 numtime = hour(time)+minute(time)/60;
 
+% determine temporal resolution of data
 temporalres = abs(time(1)-time(2));
-if temporalres == duration(1,0,0)
+
+if temporalres == duration(1,0,0) % if hourly data
     x = 0:23;
     step = 1;
-elseif temporalres == duration(0,1,0)
+elseif temporalres == duration(0,1,0) % if minutely data
     x = 0:0.5:23.5;
     step = 0.5;
-else % any higher resolution use 30min avgs
+else  % if any resolution greater than 1 minute but less than 1 hour
     x = 0:0.5:23.5;
     step = 0.5;
 end
 
-% x  = 0:0.5:23.5;
-% step = 0.5;
-
-
-% get monthly avg windspds for each 1/2hr
+% perform averages
 for i=1:numel(x)
-   
-    % gets indices corresp to data for each halfhour
-    
-    g = find(numtime>=x(i) & numtime<=x(i)+step);
+    % find all data between time interval
+    g = find(numtime>=x(i) & numtime<=x(i)+step); 
 
-     % g changes, hold indices of data for each desired half hour. 
     if ~isempty(g)
-
-        A = wspd(g);
-        B = A(~isnan(A));
+        tmp = wspd(g);
+        tmp = tmp(~isnan(tmp));
         % B has windspeed data w/o NaNs
-        wsps(i) = mean(B);
+        wsps(i) = mean(tmp);
         
        
-        C = wdir(g);
-        D = C(~isnan(C));
-        wdirs(i) = mean(D);
+        tmp = wdir(g);
+        tmp = tmp(~isnan(tmp));
+        wdirs(i) = mean(tmp);
     end
+    
 end
+
 end
