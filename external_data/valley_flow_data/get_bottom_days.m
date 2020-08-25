@@ -25,7 +25,6 @@ windspeed = tbl.windspeed(g);
 winddirection = tbl.winddirection(g);
 datetimes = tbl.datetime(g);
 
-
 % create daily averages then take the bottom percentage of those days
 [y,m,d] = ymd(datetimes(1));
 date1 = datetime(y,m,d,0,0,0);
@@ -71,16 +70,11 @@ end
 clearvars g i date_start date_end date_iter date1 y m d
 
 % end of daily averaging, put all wsps averages into one array
-all_wsps_avg = [all_wsps_avg, mean_wsps]; % days that are 0 wsps = no data
+all_wsps_avg = [all_wsps_avg, mean_wsps]; % days that are 0-valued wsps = no data
 all_days_avg = [all_days_avg, days_used];
 
-% all data in big arrays, for indexing later
-all_datetimes = [all_datetimes; tbl.datetime];
-all_wsps = [all_wsps; tbl.windspeed];
-all_wdir = [all_wdir; tbl.winddirection];
-
 end
-%
+
 % get bottom x-percentile
 bottom = prctile(all_wsps_avg,30);
 g = all_wsps_avg<bottom;
