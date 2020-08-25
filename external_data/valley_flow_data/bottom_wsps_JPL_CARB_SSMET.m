@@ -1,16 +1,18 @@
-% bottom percentage windspeed analysis for JPL and CARB site
+% bottom percentage windspeed analysis for JPL,SSMET,CARB sites
+
 clear
 clc
+
 % read in all data
 load('bottomdays.mat');
 JPL = readJPLmet;
 CARB = readCARBmet;
 SS = readSSmet;
 
-%%
+
 % site = "CARB";
 % site = "JPL";
-site = "SS";
+% site = "SS";
 
 if site == "JPL"
     lat = JPL.lat;
@@ -60,6 +62,7 @@ subplot(1,3,3);plot(x,wdirs);grid;xticks([0:2:24]);yticks([0:15:360]);add_degs;x
 set(gcf, 'Units', 'Normalized', 'OuterPosition', [0.1, 0.32, 0.7, 0.55])
 fig = strcat(sitename,'.png');
 % saveas(gcf,fig)
+
 %% notes:
 % JPL site portrays NW-SE valley flow fairly well
 % portrays Westerly-Easterly flow and the Transition from mountain flows to valley flows.
@@ -69,4 +72,4 @@ fig = strcat(sitename,'.png');
 % between NW valley flow and SW-westerly mountain flow (SW-mnt flow weighed
 % more heavily) 
 
-% CARB site: hourly data -- could be reason why plots are kinda bad
+% CARB site: hourly data -- could be reason why plots are off
