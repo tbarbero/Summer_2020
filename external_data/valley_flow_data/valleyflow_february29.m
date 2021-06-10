@@ -26,7 +26,7 @@ JPLwdir = JPL.wdir(g);
 [wsps1, wdirs1, x1] = avgData(SStime, SSwspd, SSwdir);
 [wsps2, wdirs2, x2] = avgData(JPLtime, JPLwspd, JPLwdir);
 [wsps3, wdirs3, x3] = avgData(CARBtime, CARBwspd, CARBwdir);
-
+%%
 % plots
 subplot(3,2,1); plot(x1, wsps1); grid; legend('Our Site');ylabel('Wspd (m/s)');xlabel(' Hour (PST)');title('29th Feb Data');xticks([0:2:24])
 subplot(3,2,2); plot(x1, wdirs1); grid; add_degs; legend('Our Site');ylabel('Wdir (m/s)');xlabel(' Hour (PST)');xticks([0:2:24])

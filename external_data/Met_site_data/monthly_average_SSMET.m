@@ -14,18 +14,18 @@ windspeed = SS.wspd;
 winddirection = SS.wdir;
 dates = datetime(year(time),month(time),day(time),'TimeZone','America/Los_Angeles');
 
-% exclude dusty day data
-g = ~ismember(dates,dustydays); % dustydays in PST timezone
-time = time(g);
-windspeed = windspeed(g);
-winddirection = winddirection(g);
-
-% look at before may 21 data
-g = month(time)<5 | month(time)==5 & day(time)<21;
-time = time(g);
-windspeed = windspeed(g);
-winddirection = winddirection(g);
-
+% % exclude dusty day data
+% g = ~ismember(dates,dustydays); % dustydays in PST timezone
+% time = time(g);
+% windspeed = windspeed(g);
+% winddirection = winddirection(g);
+% 
+% % look at before may 21 data
+% g = month(time)<5 | month(time)==5 & day(time)<21;
+% time = time(g);
+% windspeed = windspeed(g);
+% winddirection = winddirection(g);
+% 
 % averages
 [wsps, wdirs, x] = avgData(time, windspeed, winddirection);
 

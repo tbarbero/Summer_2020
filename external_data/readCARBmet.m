@@ -1,6 +1,6 @@
 % function to make CARB data into table
 function [CARB] = readCARBmet
-tbl = readSWINSPD('SWINSPD_PICKDATA_2020-8-1.csv');
+tbl = readSWINSPD("SWINSPD_PICKDATA_2020-8-1.csv");
 tbl(5113:5124,:) = [];
 
 % get times

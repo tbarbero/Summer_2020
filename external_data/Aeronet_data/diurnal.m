@@ -1,10 +1,9 @@
 % What is the diurnal cycle of fine and coarse AOD?
-
-clear
-clc
+clear;clc;close
 
 % load data
 load('aod_data.mat');
+load('pmdays.mat');
 
 % create variables
 [y,m,d] = datevec(SaltonSea.Date_ddmmyyyy);
@@ -18,29 +17,28 @@ fine = SaltonSea.FineAOD;
 clearvars y m d h mm s
 
 % constrain data to before May 21 (instrument error after may 21)
-g = month(datetimes)<5 | month(datetimes)==5 & day(datetimes)<21; % union
+% g = month(datetimes)<5 | month(datetimes)==5 & day(datetimes)<21; % union
+% datetimes = datetimes(g);
+% dates = dates(g);
+% coarse = coarse(g);
+% fine = fine(g);
+
+g = ismember(dates,pmdays)
 datetimes = datetimes(g);
 dates = dates(g);
 coarse = coarse(g);
 fine = fine(g);
 
 % create a variable that holds dusty days, omit these from analysis
-aod_threshold = 0.06;
+aod_threshold = 0.1;
 
 g = coarse > aod_threshold;
 dustydays = dates(g);
 dustydays = unique(dustydays);
 
 % save variables to use later
-save('dustydays.mat','dustydays','aod_threshold')
-
-% exclude dusty day data
-g = ~ismember(dates,dustydays); % crosses each row of A w/ B --> logical
-datetimes = datetimes(g);
-dates = dates(g);
-coarse = coarse(g);
-fine = fine(g);
-
+save('/Users/tyler/Documents/Summer2020/external_data/dustydays.mat','dustydays','aod_threshold')
+%
 % 30 minute averages
 x = 0:.5:23.5;
 
@@ -49,23 +47,32 @@ time = hour(datetimes)+minute(datetimes)/60;
 
 aod_c = NaN(size(x));
 aod_f = NaN(size(x));
+
 for i = 1:numel(x)
-    
     g = find(time>=x(i) & time<=x(i)+.5 & coarse >= 0 & coarse <= aod_threshold);
-    if ~isempty(g); aod_c(i) = mean(coarse(g)); end
-    
+        aod_c(i) = nanmean(coarse(g));
+        std_aodc(i) = std(coarse(g));
+        array_coarse{i} = coarse(g); % holds all data in cell array
+        
     g = find(time>=x(i) & time<=x(i)+.5 & fine >= 0 & fine <= aod_threshold);
-    if ~isempty(g); aod_f(i) = mean(fine(g)); end
-
+        aod_f(i) = nanmean(fine(g)); 
+        std_aodf(i) = std(fine(g));
+        array_fine{i} = fine(g); % holds all data in cell array
 end
-
 g = x>=8 & x<=16; % don't use data around sunrise/sunset
-plot(x(g),aod_c(g)); hold on
-plot(x(g),aod_f(g)); grid 
+hold
+% plot coarse mode aod
+plot(x(g),aod_c(g),'b');
+plot(x(g),aod_c(g)+std_aodc(g),'b--','HandleVisibility','off');
+plot(x(g),aod_c(g)-std_aodc(g),'b--','HandleVisibility','off');
+% plot fine mode aod
+plot(x(g),aod_f(g),'r');
+plot(x(g),aod_f(g)+std_aodf(g),'r--','HandleVisibility','off');
+plot(x(g),aod_f(g)-std_aodf(g),'r--','HandleVisibility','off');
+grid
 
-% plot this to see full extent
-% plot(x,aod_c); hold on
-% plot(x,aod_f); grid on
-legend('Dust','Pollution','Location','SE')
-ylabel('Aerosol optical depth'); xlabel('Hour (PST)')
-title('Averaged AOD as a function of hour')
+set(gca,'TickLabelInterpreter','Latex')
+legend('Coarse-mode','Fine-mode','Location','SE','Interpreter', 'Latex')
+ylabel('Aerosol optical depth','Interpreter', 'Latex'); xlabel('Hour (PST)','Interpreter', 'Latex')
+% title('Averaged AOD as a function of hour')
+% print(gcf,'-depsc', '~/Documents/Summer2020/external_data/figs/aod.eps')

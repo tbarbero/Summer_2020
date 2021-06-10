@@ -4,77 +4,106 @@
 % -----------------------------------------------------------------
 % Analysis using bottom percentage of windspeed 
 % -----------------------------------------------------------------
-
-clear
-clc
+% 
+% function valleyflow_bottom_wsps_JPL_SSMET_CARB(site)
+% clearvars
+clc;clear;close
 
 % read in all data
 load('bottomdays.mat');
-JPL = readJPLmet;
-CARB = readCARBmet;
-SS = readSSmet;
+load('pmdays.mat');
+load('~/Documents/Summer2020/external_data/ceilometer_data/comp75/CL51_composite.mat','Blh')
 
-
-% site = "CARB";
-% site = "JPL";
-% site = "SS";
-
-if site == "JPL"
-    lat = JPL.lat;
-    lon = JPL.lon;
-    sitename = JPL.sitename;
-    datetimes = datetime(JPL.time,'TimeZone','UTC');
-    datetimes = datetime(datetimes,'TimeZone','America/Los_Angeles');
-    windspeed = JPL.wspd;
-    winddirection = JPL.wdir;
-    dates = datetime(year(datetimes),month(datetimes),day(datetimes),'TimeZone','America/Los_Angeles');
-elseif site == "SS"
-    lat = SS.lat;
-    lon = SS.lon;
-    sitename = SS.sitename;
-    datetimes = datetime(SS.time,'TimeZone','UTC');
-    datetimes = datetime(datetimes,'TimeZone','America/Los_Angeles');
-    windspeed = SS.wspd;
-    winddirection = SS.wdir;
-    dates = datetime(year(datetimes),month(datetimes),day(datetimes),'TimeZone','America/Los_Angeles');
-
-elseif site == "CARB"
-    lat = CARB.lat;
-    lon = CARB.lon;
-    sitename = CARB.sitename;
-    datetimes = datetime(CARB.time,'TimeZone','America/Los_Angeles');
-    windspeed = CARB.wspd;
-    winddirection = CARB.wdir;
-    dates = datetime(year(datetimes),month(datetimes),day(datetimes),'TimeZone','America/Los_Angeles');
-end
-
+site = ["JPL","SS","CARB"];
+%
+% for i=1:numel(site)
+for i=3
+    
+    if i==1
+        MET = readJPLmet; % UTC
+        lat = MET.lat;
+        lon = MET.lon;
+        sitename = MET.sitename;
+        datetimes = datetime(MET.time,'TimeZone','UTC');
+        datetimes = datetime(datetimes,'TimeZone','America/Los_Angeles');
+        windspeed = MET.wspd;
+        winddirection = MET.wdir;
+        dates = datetime(year(datetimes),month(datetimes),day(datetimes),'TimeZone','America/Los_Angeles');
+    end
+    
+    if i==2; 
+        MET = readSSmet; % UTC time
+        lat = MET.lat;
+        lon = MET.lon;
+        sitename = MET.sitename;
+        datetimes = datetime(MET.time,'TimeZone','UTC');
+        datetimes = datetime(datetimes,'TimeZone','America/Los_Angeles');
+        windspeed = MET.wspd;
+        winddirection = MET.wdir;
+        dates = datetime(year(datetimes),month(datetimes),day(datetimes),'TimeZone','America/Los_Angeles');
+    end
+    
+    if i==3;
+        MET = readCARBmet; % PST time
+        lat = MET.lat;
+        lon = MET.lon;
+        sitename = MET.sitename;
+        datetimes = datetime(MET.time,'TimeZone','America/Los_Angeles');
+        windspeed = MET.wspd;
+        winddirection = MET.wdir;
+        dates = datetime(year(datetimes),month(datetimes),day(datetimes),'TimeZone','America/Los_Angeles');
+    end
 % constrain site data to same subset of days
-g = ismember(dates,bottom_days);
-bottom_windspeed = windspeed(g);
-bottom_winddirection = winddirection(g);
-bottom_datetimes = datetimes(g);
+g = ismember(dates,pmdays);
+windspeed = windspeed(g);
+winddirection = winddirection(g);
+datetimes = datetimes(g);
+dates = dates(g);
+
+% use bottom days
+% g = ismember(dates,bottom_days);
+% windspeed = windspeed(g);
+% winddirection = winddirection(g);
+% datetimes = datetimes(g);
+% dates = dates(g);
 
 % data as function of hour averaging
-[wsps, wdirs, x] = avgData(bottom_datetimes, bottom_windspeed, bottom_winddirection);
+out1 = avgData(datetimes, windspeed);
+out2 = avgWdir(datetimes, winddirection);
+%%
+% deal with discontinuity 
+% out1.var(out1.var<250) = out1.var(out1.var<250)+360;
+plot(out1.x,out1.var);
+grid
+% 
+hold on
+subplot(1,2,1)
+plot(out1.x,out1.var);
+grid;xticks([0:2:24]);xlabel('Hour (PST)','Interpreter','latex');
+ylabel('Wind speed ($ms^{-1}$)','Interpreter','latex');xlim([0 23.5]);hold on
+set(gca,'ticklabelinterpreter','latex')
+yyaxis right
+x = linspace(0,24,5400);
+plot(x,smooth(Blh(1,:),19)) % 1min smoothing 16 sec data
+ylabel('Altitude (m)','Interpreter','latex')
+legend({'NTB','BLH'},'location','NW','Interpreter','latex')
+hold off
 
+% discontinuity fix
+out2.var(out2.var<250) = out2.var(out2.var<250) + 360;
+subplot(1,2,2)
+plot(out2.x,out2.var);
+grid;xticks([0:2:24]);yticks([0:45:460])
+yticklabels({0,45,90,135,180,225,270,315,360,45,90})
+xlabel('Hour (PST)','Interpreter','latex');ylabel('Wind direction $(^o$)','Interpreter','latex');xlim([0 23.5]);hold on
+legend('NTB','location','NW','interpreter','latex')
+set(gca,'ticklabelinterpreter','latex')
+set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.32, 0.6, 0.55])
+saveas(gcf,'/Users/tyler/Documents/Summer2020/external_data/poster_figs/winds1.png')
+end
+% plot(x
+% subplot(1,2,1);legend({'JPL','Salton','NTB'},'Location','SE','Interpreter','latex')
+% subplot(1,2,2);legend({'JPL','Salton','NTB'},'Location','SW','Interpreter','latex')
+% set(gcf, 'Units', 'Normalized', 'OuterPosition', [0, 0.32, 0.6, 0.55])
 
-% plots
-subplot(1,3,1);geoscatter(lat, lon, 'r');geobasemap 'colorterrain'; geolimits([32.4 34],[-117 -115])
-title(sitename); hold on
-
-subplot(1,3,2);plot(x,wsps);grid;xticks([0:2:24]);xlabel('Hour (PST)');ylabel('Wspd (m/s)');xlim([0 23.5]);
-subplot(1,3,3);plot(x,wdirs);grid;xticks([0:2:24]);yticks([0:15:360]);add_degs;xlabel('Hour (PST)');ylabel('Deg (^o)');xlim([0 23.5])
-set(gcf, 'Units', 'Normalized', 'OuterPosition', [0.1, 0.32, 0.7, 0.55])
-fig = strcat(sitename,'.png');
-% saveas(gcf,fig)
-
-%% notes:
-% JPL site portrays NW-SE valley flow fairly well
-% portrays Westerly-Easterly flow and the Transition from mountain flows to valley flows.
-% might be correct
-
-% JPL site: more westerly than NW during early morning (0-6): probably avg
-% between NW valley flow and SW-westerly mountain flow (SW-mnt flow weighed
-% more heavily) 
-
-% CARB site: hourly data -- could be reason why plots are off
+% saveas(gcf,'/Users/tyler/Documents/Summer2020/external_data/poster_figs/winds.png')

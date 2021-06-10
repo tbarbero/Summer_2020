@@ -40,10 +40,10 @@ x = [x(x>0) x(x<0)];
 x(x<0) = x(x<0)+24;
 
 g = x>=8 & x<=16; % don't use data around sunrise/sunset
-plot(x(g),aod_c(g),x(g),aod_f(g)); grid on
+plot(x(g),aod_c(g),'.-','MarkerSize',10);hold
+plot(x(g),aod_f(g),'.-r','MarkerSize',10);grid
 legend('Dust','Pollution')
 ylabel('Aerosol optical depth')
 xlabel('Hour (PST)')
 
-
-
+% print(gcf,'-depsc', '~/Documents/Summer2020/external_data/figs/aod.eps')
